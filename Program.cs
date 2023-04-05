@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using static CardGame.Program;
@@ -41,7 +42,7 @@ namespace CardGame
                     TwoPair(inputCards);
                     Pair(inputCards);
                     HighCard(inputCards);
-                    //Straight(inputCards);
+                    Straight(inputCards);
 
                 } while (false);
 
@@ -361,7 +362,7 @@ namespace CardGame
             }
             public bool Straight(string[] inputCards)
             {
-                List<String> ar = new List<String>();
+                List<string> ar = new List<string>();
                 foreach (string card in inputCards)
                 {
                     if (FaceCardAll.Contains(card) && card.Length == 2)
@@ -375,28 +376,32 @@ namespace CardGame
                         ar.Add(firstChar);
                     }
                 }
-                
-                /*var g = ar.GroupBy(i => i);
-                int temp = 0;
-                var min = ar.Min();
-                var max = ar.Max();
-                var all = Enumerable.Range(min, diff + 1);
-                return ar.SequenceEqual(all);*/
-                /*foreach (var grp in g)
+                ar.OrderByDescending(x=>x);
+                int index = Array.IndexOf(precedence, ar[0]);
+                Console.WriteLine("index" + index);
+                List<string> subList = new List<string>();
+                for (int i=0;i<5;i++)
                 {
-                    if (grp.Count() == 4)
-                    {
-                        Console.WriteLine("Four of a Kind");
-                        temp = 1;
-                    }
-                }*/
+                    subList.Add(precedence[index]);
+                    index++;
+                }
+                bool isEqual = ar.OrderBy(x => x).SequenceEqual(subList.OrderBy(x => x));
+                Console.WriteLine(isEqual);
+                if (isEqual == true)
+                {
+                    Console.WriteLine("Straight");
+                }
+                else
+                {
+                    ElseValue++;
+                }
                 return false;
             }
             
             public bool HighCard(string[] inputCards)
             {
                 
-                if(ElseValue == 7)
+                if(ElseValue == 8)
                 {
                     Console.WriteLine("High Card");
                 }
