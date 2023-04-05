@@ -22,6 +22,8 @@ namespace CardGame
         {
             //assigning values of cards
             public string[] FaceCard = { "10s", "10h", "10d", "10c", "Ks", "Kh", "Kd", "Kc", "Qs", "Qh", "Qd", "Qc", "Js", "Jh", "Jd", "Jc", "As", "Ah", "Ad", "Ac" };
+            public string[] FaceCardWithout = { "10s", "10h", "10d", "10c", "9s","9d","9c","9h","8s","8d","8c","8h","7s","7d","7c","7h","6s","6d","6c","6h","5s","5d","5c","5h",
+                                            "4s","4d","4c","4h","3s","3d","3c","3h","2s","2d","2c","2h"};
             public string[] FaceCardAll = { "10s", "10h", "10d", "10c", "Ks", "Kh", "Kd", "Kc", "Qs", "Qh", "Qd", "Qc", "Js", "Jh", "Jd", "Jc", "As", "Ah", "Ad", "Ac",
                                             "9s","9d","9c","9h","8s","8d","8c","8h","7s","7d","7c","7h","6s","6d","6c","6h","5s","5d","5c","5h",
                                             "4s","4d","4c","4h","3s","3d","3c","3h","2s","2d","2c","2h"};
@@ -41,8 +43,9 @@ namespace CardGame
                     FullHOuse(inputCards);
                     TwoPair(inputCards);
                     Pair(inputCards);
-                    HighCard(inputCards);
                     Straight(inputCards);
+                    HighCard(inputCards);
+
 
                 } while (false);
 
@@ -196,7 +199,7 @@ namespace CardGame
                     }
                     if (temp == 2)
                     {
-                    Console.WriteLine("Finl THree of a kind");
+                    Console.WriteLine("Full House");
                     }
                 else
                 {
@@ -360,48 +363,62 @@ namespace CardGame
                 }
                 return false;
             }
-            public bool Straight(string[] inputCards)
-            {
+           public bool Straight(string[] inputCards)
+           {
+                int TempValue = 0;
+                foreach (string cards in inputCards)
+                {
+                    if(FaceCardWithout.Contains(cards))
+                    {
+                        TempValue++;
+                    }
+                }
                 List<string> ar = new List<string>();
-                foreach (string card in inputCards)
+                if (TempValue == 5)
                 {
-                    if (FaceCardAll.Contains(card) && card.Length == 2)
+                    foreach (string card in inputCards)
                     {
-                        string firstChar = card[0].ToString();
-                        ar.Add(firstChar);
+                        if (FaceCardWithout.Contains(card) && card.Length == 2)
+                        {
+                            string firstChar = card[0].ToString();
+                            ar.Add(firstChar);
+                        }
+                        else if (FaceCardWithout.Contains(card) && card.Length == 3)
+                        {
+                            string firstChar = card.Substring(0, 2);
+                            ar.Add(firstChar);
+                        }
                     }
-                    else if (FaceCard.Contains(card) && card.Length == 3)
+                    ar.OrderByDescending(x => x);
+                    foreach (string card in ar)
                     {
-                        string firstChar = card.Substring(0, 2);
-                        ar.Add(firstChar);
+                        Console.WriteLine(card);
                     }
+                    int index = Array.IndexOf(precedence, ar[0]);
+                    List<string> subList = new List<string>();
+                    for (int i = 0; i < 5; i++)
+                    {
+                        subList.Add(precedence[index]);
+                        index++;
+                    }
+                    bool isEqual = ar.OrderBy(x => x).SequenceEqual(subList.OrderBy(x => x));
+                    if (isEqual == true)
+                    {
+                        Console.WriteLine("Straight");
+                    }
+                    else
+                    {
+                        ElseValue++;
+                    }
+                    TempValue++;
                 }
-                ar.OrderByDescending(x=>x);
-                int index = Array.IndexOf(precedence, ar[0]);
-                Console.WriteLine("index" + index);
-                List<string> subList = new List<string>();
-                for (int i=0;i<5;i++)
-                {
-                    subList.Add(precedence[index]);
-                    index++;
-                }
-                bool isEqual = ar.OrderBy(x => x).SequenceEqual(subList.OrderBy(x => x));
-                Console.WriteLine(isEqual);
-                if (isEqual == true)
-                {
-                    Console.WriteLine("Straight");
-                }
-                else
-                {
-                    ElseValue++;
-                }
+                
                 return false;
             }
-            
             public bool HighCard(string[] inputCards)
             {
                 
-                if(ElseValue == 8)
+                if(ElseValue == 7)
                 {
                     Console.WriteLine("High Card");
                 }
